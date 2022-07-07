@@ -16,45 +16,45 @@ type FarmAnimal interface {
 }
 
 type Cat struct {
-	CatWeight    int
-	CatFeedPerKg int
-	CatName      string
+	catWeight    int
+	catFeedPerKg int
+	catName      string
 }
 
 func (cat Cat) feedWeightPerMonth() int {
-	return cat.CatWeight * catFeedPerKg
+	return cat.catWeight * catFeedPerKg
 }
 
 func (cat Cat) String() string {
-	return fmt.Sprintf("My name is %s. My weight is %d kilos. I need %d kilos of feed per month.", cat.CatName, cat.CatWeight, cat.feedWeightPerMonth())
+	return fmt.Sprintf("My name is %s. My weight is %d kilos. I need %d kilos of feed per month.", cat.catName, cat.catWeight, cat.feedWeightPerMonth())
 }
 
 type Dog struct {
-	DogWeight    int
-	DogFeedPerKg int
-	DogName      string
+	dogWeight    int
+	dogFeedPerKg int
+	dogName      string
 }
 
 func (dog Dog) feedWeightPerMonth() int {
-	return dog.DogWeight * dog.DogFeedPerKg
+	return dog.dogWeight * dog.dogFeedPerKg
 }
 
 func (dog Dog) String() string {
-	return fmt.Sprintf("My name is %s. My weight is %d kilos. I need %d kilos of feed per month.", dog.DogName, dog.DogWeight, dog.feedWeightPerMonth())
+	return fmt.Sprintf("My name is %s. My weight is %d kilos. I need %d kilos of feed per month.", dog.dogName, dog.dogWeight, dog.feedWeightPerMonth())
 }
 
 type Cow struct {
-	CowWeight    int
-	CowFeedPerKg int
-	CowName      string
+	cowWeight    int
+	cowFeedPerKg int
+	cowName      string
 }
 
 func (cow Cow) feedWeightPerMonth() int {
-	return cow.CowWeight * cow.CowFeedPerKg
+	return cow.cowWeight * cow.cowFeedPerKg
 }
 
 func (cow Cow) String() string {
-	return fmt.Sprintf("My name is %s. My weight is %d kilos. I need %d kilos of feed per month.", cow.CowName, cow.CowWeight, cow.feedWeightPerMonth())
+	return fmt.Sprintf("My name is %s. My weight is %d kilos. I need %d kilos of feed per month.", cow.cowName, cow.cowWeight, cow.feedWeightPerMonth())
 }
 
 func typeFarmInfo(farm []FarmAnimal) int {
