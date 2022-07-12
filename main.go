@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"time"
@@ -15,6 +16,10 @@ const minDogWeight int = 5
 const maxDogWeight int = 10
 const minCowWeight int = 50
 const maxCowWeight int = 250
+
+var errAnimalType error = errors.New("Invalid animal type.")
+var errAnimalWeight error = errors.New("Invalid animal weight.")
+var errIsEdible error = errors.New("Invalid isEdible property.")
 
 type FarmAnimal interface {
 	feedWeightPerMonth() int
@@ -132,15 +137,15 @@ func makeFarm(n int) (farm []FarmAnimal) {
 		switch newRandomAnimal {
 		case 1:
 			newCatWeight := rand.Intn(maxCatWeight-minCatWeight) + minCatWeight
-			animal = Cat{newCatWeight, catFeedPerKg, "Cat", false}
+			animal = Cat{catWeight: newCatWeight, catFeedPerKg: catFeedPerKg, catName: "Cat", isEdible: false}
 
 		case 2:
 			newDogWeight := rand.Intn(maxDogWeight-minDogWeight) + minDogWeight
-			animal = Dog{newDogWeight, dogFeedPerKg, "Dog", false}
+			animal = Dog{dogWeight: newDogWeight, dogFeedPerKg: dogFeedPerKg, dogName: "Dog", isEdible: false}
 
 		case 3:
 			newCowWeight := rand.Intn(maxCowWeight-minCowWeight) + minCowWeight
-			animal = Cow{newCowWeight, cowFeedPerKg, "Cow", true}
+			animal = Cow{cowWeight: newCowWeight, cowFeedPerKg: cowFeedPerKg, cowName: "Cow", isEdible: true}
 
 		}
 		farm = append(farm, animal)
@@ -153,17 +158,17 @@ func makeFarm(n int) (farm []FarmAnimal) {
 
 func checkAnimalType(animal FarmAnimal) error {
 	var err error
-	var animalType string
+	var expAnimalType string
 	switch animal.(type) {
 	case Dog:
-		animalType = "Dog"
+		expAnimalType = "Dog"
 	case Cat:
-		animalType = "Cat"
+		expAnimalType = "Cat"
 	case Cow:
-		animalType = "Cow"
+		expAnimalType = "Cow"
 	}
-	if animal.getAnimalName() != animalType {
-		err = fmt.Errorf("Animal name does not match its type. %s can't be %s", animalType, animal.getAnimalName())
+	if animal.getAnimalName() != expAnimalType {
+		err = fmt.Errorf("%wAnimal name does not match its type. %s can't be %s", errAnimalType, expAnimalType, animal.getAnimalName())
 	}
 	return err
 }
@@ -184,12 +189,12 @@ func checkAnimalWeight(animal FarmAnimal) error {
 		maxWeight = maxCowWeight
 	}
 	if animal.getAnimalWeight() < minWeight || animal.getAnimalWeight() > maxWeight {
-		err = fmt.Errorf("Animal has incorrect weight. Current weight is %v kilos. Minimum weight is %v kilos, maximum weight is %v kilos", animal.getAnimalWeight(), minWeight, maxWeight)
+		err = fmt.Errorf("%wAnimal has incorrect weight. Current weight is %v kilos. Minimum weight is %v kilos, maximum weight is %v kilos", errAnimalWeight, animal.getAnimalWeight(), minWeight, maxWeight)
 	}
 	return err
 }
 
-func checkIsEdeble(animal FarmAnimal) error {
+func checkIsEdible(animal FarmAnimal) error {
 	var err error
 	var isEdeble bool
 	switch animal.(type) {
@@ -201,26 +206,26 @@ func checkIsEdeble(animal FarmAnimal) error {
 		isEdeble = true
 	}
 	if animal.getIsEdible() != isEdeble {
-		err = fmt.Errorf("Invalid isEdible property")
+		err = fmt.Errorf("%w", errIsEdible)
 	}
 	return err
 }
 
 func checkFarm(farm []FarmAnimal) error {
-	var err error
+	//var err error
 	for _, v := range farm {
-		err = checkAnimalType(v)
-		if err != nil {
+
+		if err := checkAnimalType(v); err != nil {
 			err = fmt.Errorf("Type validation failed:%w", err)
 			return err
 		}
-		err = checkAnimalWeight(v)
-		if err != nil {
+
+		if err := checkAnimalWeight(v); err != nil {
 			err = fmt.Errorf("Weight validation failed:%w", err)
 			return err
 		}
-		err = checkIsEdeble(v)
-		if err != nil {
+
+		if err := checkIsEdible(v); err != nil {
 			err = fmt.Errorf("Edeble validation failed:%w", err)
 			return err
 		}
